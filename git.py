@@ -8,18 +8,22 @@ import datetime
 if not pynotify.init("Version Control Notifier"):
 	exit()
 
-full_repo = urllib2.urlopen('https://github.com/api/v2/json/repos/show/ryansb/project_euler').read() # gets repo info
-watched = urllib2.urlopen('https://github.com/api/v2/json/repos/watched/ryansb').read() # gets repo info
-repo_branches = urllib2.urlopen('https://github.com/api/v2/json/repos/show/ryansb/project_euler/branches').read()
-rdict = json.loads(full_repo)
-bdict = json.loads(repo_branches)
-wdict = json.loads(watched) # dictionary of all watched repos
+def get_repos(user):
+	#full_repo = urllib2.urlopen('https://github.com/api/v2/json/repos/show/ryansb/project_euler').read() # gets repo info
+	#repo_branches = urllib2.urlopen('https://github.com/api/v2/json/repos/show/ryansb/project_euler/branches').read()
+	#rdict = json.loads(full_repo)
+	#bdict = json.loads(repo_branches)
+	watched = urllib2.urlopen('https://github.com/api/v2/json/repos/watched/'+user).read() # gets all watched repos by a user
+	return json.loads(watched)['repositories'] # dictionary of all watched repos
 
-
+repos = get_repos('ryansb')
 #print datetime.datetime.now()
+for i in repos:
+	print i['name']
+	print i['pushed_at']
 
-n = pynotify.Notification(rdict['repository']['name'], rdict['repository']['pushed_at'])
-n.show()
+#n = pynotify.Notification(rdict['repository']['name'], ['repository']['pushed_at'])
+#n.show()
 
 #n = pynotify.Notification("Title", "Message")
 #n.show()
@@ -49,4 +53,3 @@ Contents of the branch dictionary for ryansb/project_euler/branches
 	{'master': '4cd453ad02de472ef1b305aa57c450858dad0e14'}
 }
 """
-#http;//github.com/api/v2/json/repos/watched/ryansb returns all the repos I watch
