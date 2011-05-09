@@ -14,11 +14,12 @@ displayed_messages = []
 count = 0
 
 def pull_feeds():
+	keys = open(keys.txt).read()
 	#Returns a list of raw version control feeds
 	#Bitbucket feed (0)
-	feed =feedparser.parse("https://bitbucket.org/rbrown/atom/feed?token=0ab0af15b07352b1596a30bed1293615")
+	feed =feedparser.parse()
 	#Github feeds (1)
-	feed2 =feedparser.parse("https://github.com/ryansb.private.actor.atom?token=cae0b3520b731518fcc0f2fc683cae31")
+	feed2 =feedparser.parse()
 	return [feed, feed2]
 
 while(1):
