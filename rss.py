@@ -3,6 +3,7 @@
 # Description: checks github and notifies if there are new commits
 import pynotify
 import feedparser
+from BeautifulSoup import BeautifulSoup
 import re
 import datetime
 if not pynotify.init("Version Control Notifier"):
@@ -17,10 +18,14 @@ def pull_feeds():
 	return [feed, feed2]
 #def github_find_author(raw):
 #def bitbucket_find_author(raw):
-n = pynotify.Notification(pull_feeds()[0]['entries'][0]['title'], "Message")
-n.show()
+for i in pull_feeds():
+	soup = BeautifulSoup(i['entries'][0]['summary'])
+	if(soup.find('p')):
+		n = pynotify.Notification(i['entries'][0]['title'], soup.find('p').text)
+	if(soup.find('blockquote')):
+		n = pynotify.Notification(i['entries'][0]['title'], soup.find('blockquote').text)
 
-n = pynotify.Notification(pull_feeds()[1]['entries'][0]['title'], "Message")
-n.show()
+	n.show()
+
 #n = pynotify.Notification("Title", "Message")
 #n.show()
