@@ -24,16 +24,17 @@ while(1):
 	for i in pull_feeds():
 		for j in i['entries']:
 			soup = BeautifulSoup(j['summary'])
-			if(soup.find('p') and not displayed_messages.__contains__(j['id'])):
+			if(soup.find('p')):
 				n = pynotify.Notification(j['title'], soup.find('p').text)
-			if(soup.find('blockquote') and not displayed_messages.__contains__(j['id'])):
+			if(soup.find('blockquote')):
 				n = pynotify.Notification(j['title'], soup.find('blockquote').text)
-			displayed_messages.append(j['id'])
-			n.show()
+			if(not displayed_messages.__contains__(j['id'])):
+				n.show()
+				displayed_messages.append(j['id'])
+			count += 1
 			if count > 10:
 				break
-			count += 1
-	time.sleep(10)
+	time.sleep(30)
 
 #n = pynotify.Notification("Title", "Message")
 #n.show()
