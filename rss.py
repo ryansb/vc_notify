@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # Author: Ryan Brown
-# Description: checks github and notifies if there are new commits
+# Description: checks Github and Bitbucket and notifies if there are new commits
+# Version 1.0.0
 import pynotify
 import feedparser
 from BeautifulSoup import BeautifulSoup
