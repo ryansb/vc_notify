@@ -32,7 +32,7 @@ while(1):
 				n.show()
 				displayed_messages.append(j['id'])
 			count += 1
-			if count > 10:
+			if count > 4:
 				break
 	time.sleep(30)
 
