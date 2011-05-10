@@ -10,6 +10,7 @@ import feedparser
 from BeautifulSoup import BeautifulSoup
 import time
 import re
+import sys
 
 if not pynotify.init("Version Control Notifier"):
 	exit()
@@ -19,7 +20,10 @@ count = 0
 
 def pull_feeds():
 	#Returns a list of raw version control feeds
-	key_arr = re.split('\s', open('keys.txt').read())
+	if sys.argv[1]:
+		key_arr = re.split('\s', open(sys.argv[1]).read())
+	else:
+		key_arr = re.split('\s', open('./keys.txt').read())
 	feeds = []
 	for key in key_arr:
 		feeds.append(feedparser.parse(key))
