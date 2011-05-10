@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # Author: Ryan Brown
 # Description: checks Github and Bitbucket and notifies if there are new commits
+# Usage: Put the Atom or RSS feeds for your version control solution (currently
+# only supports Github and BitBucket) in a file named keys.txt separated by
+# whitespace (tabs, spaces, or newlines) and run vc_notify.py
 # Version 1.0.0
 import pynotify
 import feedparser
@@ -27,9 +30,11 @@ while(1):
 		for j in i['entries']:
 			soup = BeautifulSoup(j['summary'])
 			if(soup.find('p')):
-				n = pynotify.Notification(j['title'], soup.find('p').text)
+				n = pynotify.Notification(j['title'],
+						soup.find('p').text)
 			if(soup.find('blockquote')):
-				n = pynotify.Notification(j['title'], soup.find('blockquote').text)
+				n = pynotify.Notification(j['title'],
+						soup.find('blockquote').text)
 			if(not displayed_messages.__contains__(j['id'])):
 				n.show()
 				displayed_messages.append(j['id'])

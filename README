@@ -1,2 +1,8 @@
-A simple script to notify me when a git repo on my account, or one I'm watching, has been updated
+A simple script to notify me when a git repo on my account, or one I'm
+watching, has been updated
+
 Uses the RSS/Atom feeds provided by Github or Bitbucket 
+
+Usage: Put the Atom or RSS feeds for your version control solution (currently
+only supports Github and BitBucket) in a file named keys.txt separated by
+whitespace (tabs, spaces, or newlines) and run vc_notify.py
