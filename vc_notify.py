@@ -42,7 +42,8 @@ while(1):
 						soup.find('blockquote').text)
 			if(not displayed_messages.__contains__(j['id'])):
 				displayed_messages.append(j['id'])
-			n.show()
+				if n:
+					n.show()
 			count += 1
 			if count > 4:
 				break
