@@ -41,7 +41,6 @@ while(1):
 				n = Notification(j['title'],
 						soup.find('blockquote').text)
 			if(not displayed_messages.__contains__(j['id'])):
-				n.show()
 				displayed_messages.append(j['id'])
 			count += 1
 			if count > 4:
