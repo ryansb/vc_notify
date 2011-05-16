@@ -28,8 +28,8 @@ def pull_feeds():
 		try:
 			key_arr = split('\s', open(argv[1]).read())
 		except Exception:
-			print ("Couldn't find the keys file, make sure it's in"
-			+ "the same directory as the script")
+			print ("Couldn't open keys file, bad argument passed"
+				+ "in")
 	else:
 		try:
 			keys_path = os.path.abspath(__file__)
