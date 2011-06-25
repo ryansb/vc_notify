@@ -21,9 +21,16 @@ class Notifier():
 	def __init__(cls):
 		cls.count = 0
 		cls.displayed_messages = []
+		cls.initial_pull()
 		while(1):
 			cls.parse_all()
 			sleep(30)
+
+	def initial_pull(cls):
+		for raw in cls.pull_feeds():
+			for j in raw['entries']:
+				cls.displayed_messages.append(j['id'])
+		return True
 
 	def pull_feeds(cls):
 		key_arr = []
@@ -49,7 +56,6 @@ class Notifier():
 
 	def parse_bitbucket(cls, raw):
 		count = 0
-		print 'bitbucket'
 		for inst in raw['entries']:
 			soup = BeautifulSoup(inst['summary'])
 			if(soup.find('p')):
@@ -65,7 +71,6 @@ class Notifier():
 
 	def parse_github(cls, raw):
 		count = 0
-		print 'github'
 		for inst in raw['entries']:
 			soup = BeautifulSoup(inst['summary'])
 			if(soup.find('blockquote')):
@@ -84,7 +89,6 @@ class Notifier():
 
 	def parse_chili(cls, raw):
 		count = 0
-		print 'chili'
 		for inst in raw['entries']:
 			n = Notification(inst['title_detail']['value'], inst['author_detail']['name'])
 			if(not cls.displayed_messages.__contains__(inst['id'])):
@@ -96,7 +100,6 @@ class Notifier():
 						return True
 
 	def parse_all(cls):
-		print 'parsing all'
 		feeds = cls.pull_feeds()
 		cls.parse_bitbucket(feeds[0])
 		cls.parse_github(feeds[1])
