@@ -17,49 +17,89 @@ import os
 if not init("Version Control Notifier"):
 	exit()
 
-displayed_messages = []
-count = 0
+class Notifier():
+	def __init__(cls):
+		cls.count = 0
+		cls.displayed_messages = []
+		while(1):
+			cls.parse_all()
+			sleep(30)
 
+	def pull_feeds(cls):
+		key_arr = []
+		#Returns a list of raw version control feeds
+		if len(argv) == 2:
+			try:
+				key_arr = split('\s', open(argv[1]).read())
+			except Exception:
+				print ("Couldn't open keys file, bad argument passed"
+					+ "in")
+		else:
+			try:
+				keys_path = os.path.abspath(__file__)
+				key_arr = split('\s', open(keys_path.replace('vc_notify.py',
+					'keys.txt')).read())
+			except Exception:
+				print ("Couldn't find the keys file, make sure it's in"
+				+ "the same directory as the script")
+		feeds = []
+		for key in key_arr:
+			feeds.append(parse(key))
+		return feeds
 
-def pull_feeds():
-	key_arr = []
-	#Returns a list of raw version control feeds
-	if len(argv) == 2:
-		try:
-			key_arr = split('\s', open(argv[1]).read())
-		except Exception:
-			print ("Couldn't open keys file, bad argument passed"
-				+ "in")
-	else:
-		try:
-			keys_path = os.path.abspath(__file__)
-			key_arr = split('\s', open(keys_path.replace('vc_notify.py', 'keys.txt')).read())
-		except Exception:
-			print ("Couldn't find the keys file, make sure it's in"
-			+ "the same directory as the script")
-	feeds = []
-	for key in key_arr:
-		feeds.append(parse(key))
-	return feeds
-
-while(1):
-	for i in pull_feeds():
-		for j in i['entries']:
-			soup = BeautifulSoup(j['summary'])
+	def parse_bitbucket(cls, raw):
+		count = 0
+		print 'bitbucket'
+		for inst in raw['entries']:
+			soup = BeautifulSoup(inst['summary'])
 			if(soup.find('p')):
-				n = Notification(j['title'],
+				n = Notification(inst['title'],
 						soup.find('p').text)
-			if(soup.find('blockquote')):
-				n = Notification(j['title'],
-						soup.find('blockquote').text)
-			if(not displayed_messages.__contains__(j['id'])):
-				displayed_messages.append(j['id'])
+			if(not cls.displayed_messages.__contains__(inst['id'])):
+				cls.displayed_messages.append(inst['id'])
 				if n:
 					n.show()
-			count += 1
-			if count > 4:
-				break
-	sleep(30)
+					count += 1
+					if count > 3:
+						return True
 
-#n = pynotify.Notification("Title", "Message")
-#n.show()
+	def parse_github(cls, raw):
+		count = 0
+		print 'github'
+		for inst in raw['entries']:
+			soup = BeautifulSoup(inst['summary'])
+			if(soup.find('blockquote')):
+				n = Notification(inst['title'],
+						soup.find('blockquote').text)
+			else:
+				n = Notification(inst['title'],
+						'')
+			if(not cls.displayed_messages.__contains__(inst['id'])):
+				cls.displayed_messages.append(inst['id'])
+				if n:
+					n.show()
+					count += 1
+					if count > 3:
+						return True
+
+	def parse_chili(cls, raw):
+		count = 0
+		print 'chili'
+		for inst in raw['entries']:
+			n = Notification(inst['title_detail']['value'], inst['author_detail']['name'])
+			if(not cls.displayed_messages.__contains__(inst['id'])):
+				cls.displayed_messages.append(inst['id'])
+				if n:
+					n.show()
+					count += 1
+					if count > 3:
+						return True
+
+	def parse_all(cls):
+		print 'parsing all'
+		feeds = cls.pull_feeds()
+		cls.parse_bitbucket(feeds[0])
+		cls.parse_github(feeds[1])
+		cls.parse_chili(feeds[2])
+
+n = Notifier()
