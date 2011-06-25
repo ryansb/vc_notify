@@ -30,6 +30,8 @@ class Notifier():
 		for raw in cls.pull_feeds():
 			for j in raw['entries']:
 				cls.displayed_messages.append(j['id'])
+				n = Notification("Version Control Notifier started", "Version Control Notifier will now notify you of any changes via libnotify")
+				n.show()
 		return True
 
 	def pull_feeds(cls):
