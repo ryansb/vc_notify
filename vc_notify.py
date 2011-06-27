@@ -27,11 +27,16 @@ class Notifier():
 			sleep(30)
 
 	def initial_pull(cls):
+		n = Notification("Version Control Notifier started", "Version Control Notifier will now notify you of any changes via libnotify")
+		n.show()
+		feeds = cls.pull_feeds()
+		cls.parse_bitbucket(feeds[0], display=False)
+		cls.parse_github(feeds[1], display=False)
+		cls.parse_chili(feeds[2], display=False)
+
 		for raw in cls.pull_feeds():
 			for j in raw['entries']:
 				cls.displayed_messages.append(j['id'])
-		n = Notification("Version Control Notifier started", "Version Control Notifier will now notify you of any changes via libnotify")
-		n.show()
 		return True
 
 	def pull_feeds(cls):
@@ -56,7 +61,7 @@ class Notifier():
 			feeds.append(parse(key))
 		return feeds
 
-	def parse_bitbucket(cls, raw):
+	def parse_bitbucket(cls, raw, display=True):
 		count = 0
 		for inst in raw['entries']:
 			soup = BeautifulSoup(inst['summary'])
@@ -65,13 +70,13 @@ class Notifier():
 						soup.find('p').text)
 			if(not cls.displayed_messages.__contains__(inst['id'])):
 				cls.displayed_messages.append(inst['id'])
-				if n:
+				if n and display:
 					n.show()
 					count += 1
 					if count > 3:
 						return True
 
-	def parse_github(cls, raw):
+	def parse_github(cls, raw, display=True):
 		count = 0
 		for inst in raw['entries']:
 			soup = BeautifulSoup(inst['summary'])
@@ -83,19 +88,19 @@ class Notifier():
 						'')
 			if(not cls.displayed_messages.__contains__(inst['id'])):
 				cls.displayed_messages.append(inst['id'])
-				if n:
+				if n and display:
 					n.show()
 					count += 1
 					if count > 3:
 						return True
 
-	def parse_chili(cls, raw):
+	def parse_chili(cls, raw, display=True):
 		count = 0
 		for inst in raw['entries']:
 			n = Notification(inst['title_detail']['value'], inst['author_detail']['name'])
-			if(not cls.displayed_messages.__contains__(inst['id'])):
-				cls.displayed_messages.append(inst['id'])
-				if n:
+			if(not cls.displayed_messages.__contains__(inst['title'])):
+				cls.displayed_messages.append(inst['title'])
+				if n and display:
 					n.show()
 					count += 1
 					if count > 3:
