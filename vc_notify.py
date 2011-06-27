@@ -34,9 +34,6 @@ class Notifier():
 		cls.parse_github(feeds[1], display=False)
 		cls.parse_chili(feeds[2], display=False)
 
-		for raw in cls.pull_feeds():
-			for j in raw['entries']:
-				cls.displayed_messages.append(j['id'])
 		return True
 
 	def pull_feeds(cls):
