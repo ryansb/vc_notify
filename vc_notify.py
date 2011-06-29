@@ -62,46 +62,58 @@ class Notifier():
 		count = 0
 		for inst in raw['entries']:
 			soup = BeautifulSoup(inst['summary'])
-			if(soup.find('p')):
-				n = Notification(inst['title'],
-						soup.find('p').text)
-			if(not cls.displayed_messages.__contains__(inst['id'])):
-				cls.displayed_messages.append(inst['id'])
-				if n and display:
-					n.show()
-					count += 1
-					if count > 3:
-						return True
+			try:
+				if(soup.find('p')):
+					n = Notification(inst['title'],
+							soup.find('p').text)
+				if(not cls.displayed_messages.__contains__(inst['id'])):
+					cls.displayed_messages.append(inst['id'])
+					if n and display:
+						n.show()
+						count += 1
+						if count > 3:
+							return True
+			except Exception, e:
+				pass
+		return True
 
 	def parse_github(cls, raw, display=True):
 		count = 0
 		for inst in raw['entries']:
 			soup = BeautifulSoup(inst['summary'])
-			if(soup.find('blockquote')):
-				n = Notification(inst['title'],
-						soup.find('blockquote').text)
-			else:
-				n = Notification(inst['title'],
-						'')
-			if(not cls.displayed_messages.__contains__(inst['id'])):
-				cls.displayed_messages.append(inst['id'])
-				if n and display:
-					n.show()
-					count += 1
-					if count > 3:
-						return True
+			try:
+				if(soup.find('blockquote')):
+					n = Notification(inst['title'],
+							soup.find('blockquote').text)
+				else:
+					n = Notification(inst['title'],
+							'')
+				if(not cls.displayed_messages.__contains__(inst['id'])):
+					cls.displayed_messages.append(inst['id'])
+					if n and display:
+						n.show()
+						count += 1
+						if count > 3:
+							return True
+			except Exception, e:
+				pass
+		return True
 
 	def parse_chili(cls, raw, display=True):
 		count = 0
 		for inst in raw['entries']:
-			n = Notification(inst['title_detail']['value'], inst['author_detail']['name'])
-			if(not cls.displayed_messages.__contains__(inst['title'])):
-				cls.displayed_messages.append(inst['title'])
-				if n and display:
-					n.show()
-					count += 1
-					if count > 3:
-						return True
+			try:
+				n = Notification(inst['title_detail']['value'], inst['author_detail']['name'])
+				if(not cls.displayed_messages.__contains__(inst['title'])):
+					cls.displayed_messages.append(inst['title'])
+					if n and display:
+						n.show()
+						count += 1
+						if count > 3:
+							return True
+			except Exception, e:
+				pass
+		return True
 
 	def parse_all(cls):
 		feeds = cls.pull_feeds()
