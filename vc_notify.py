@@ -117,8 +117,9 @@ class Notifier():
 
 	def parse_all(cls):
 		feeds = cls.pull_feeds()
-		cls.parse_bitbucket(feeds[0])
-		cls.parse_github(feeds[1])
-		cls.parse_chili(feeds[2])
+		for f in feeds:
+			if f.__contains__('bitbucket'): cls.parse_bitbucket(f)
+			if f.__contains__('github'): cls.parse_github(f)
+			if f.__contains__('newstex'): cls.parse_chili(f)
 
 n = Notifier()
