@@ -30,9 +30,10 @@ class Notifier():
 		n = Notification("Version Control Notifier started", "Version Control Notifier will now notify you of any changes via libnotify")
 		n.show()
 		feeds = cls.pull_feeds()
-		cls.parse_bitbucket(feeds[0], display=False)
-		cls.parse_github(feeds[1], display=False)
-		cls.parse_chili(feeds[2], display=False)
+		for key in feeds:
+			if key.__contains__('bitbucket'): cls.parse_bitbucket(parse(key), display=False)
+			if key.__contains__('github'): cls.parse_github(parse(key), display=False)
+			if key.__contains__('newstex'): cls.parse_chili(parse(key), display=False)
 
 		return True
 
@@ -53,10 +54,7 @@ class Notifier():
 			except Exception:
 				print ("Couldn't find the keys file, make sure it's in"
 				+ "the same directory as the script")
-		feeds = []
-		for key in key_arr:
-			feeds.append(parse(key))
-		return feeds
+		return key_arr
 
 	def parse_bitbucket(cls, raw, display=True):
 		count = 0
@@ -117,9 +115,9 @@ class Notifier():
 
 	def parse_all(cls):
 		feeds = cls.pull_feeds()
-		for f in feeds:
-			if f.__contains__('bitbucket'): cls.parse_bitbucket(f)
-			if f.__contains__('github'): cls.parse_github(f)
-			if f.__contains__('newstex'): cls.parse_chili(f)
+		for key in feeds:
+					if key.__contains__('bitbucket'): cls.parse_bitbucket(parse(key))
+					if key.__contains__('github'): cls.parse_github(parse(key))
+					if key.__contains__('newstex'): cls.parse_chili(parse(key))
 
 n = Notifier()
