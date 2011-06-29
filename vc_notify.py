@@ -14,7 +14,7 @@ from re import split
 from sys import argv
 import os
 
-if not init("Version Control Notifier"):
+if not init("VC Notify"):
 	exit()
 
 class Notifier():
