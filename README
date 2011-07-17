@@ -3,6 +3,8 @@ watching, has been updated
 
 Uses the RSS/Atom feeds provided by Github or Bitbucket 
 
+Version 0.2
+
 Usage: Put the Atom or RSS feeds for your version control solution (currently
 only supports Github and BitBucket) in a file named keys.txt separated by
 whitespace (tabs, spaces, or newlines) and run vc_notify.py
