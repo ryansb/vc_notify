@@ -29,32 +29,27 @@ class Notifier():
 	def initial_pull(cls):
 		n = Notification("Version Control Notifier started", "Version Control Notifier will now notify you of any changes via libnotify")
 		n.show()
-		feeds = cls.pull_feeds()
-		for key in feeds:
-			if key.__contains__('bitbucket'): cls.parse_bitbucket(parse(key), display=False)
-			if key.__contains__('github'): cls.parse_github(parse(key), display=False)
-			if key.__contains__('newstex'): cls.parse_chili(parse(key), display=False)
-
+		config = cls.read_config()
+		for pair in config.items('providers'):
+			if pair[0] == 'bitbucket': cls.parse_bitbucket(parse(pair[1]), display=False)
+			elif pair[0] == 'github': cls.parse_github(parse(pair[1]), display=False)
+			elif pair[0] == 'newstex': cls.parse_chili(parse(pair[1]), display=False)
 		return True
 
-	def pull_feeds(cls):
-		key_arr = []
+	def read_config(cls):
 		#Returns a list of raw version control feeds
+		from ConfigParser import SafeConfigParser
+		config = SafeConfigParser()
 		if len(argv) == 2:
-			try:
-				key_arr = split('\s', open(argv[1]).read())
-			except Exception:
+			if len(config.read(argv[1])) == 0:
 				print ("Couldn't open keys file, bad argument passed"
 					+ "in")
 		else:
-			try:
-				keys_path = os.path.abspath(__file__)
-				key_arr = split('\s', open(keys_path.replace('vc_notify.py',
-					'keys.txt')).read())
-			except Exception:
+			keys_path = os.path.abspath(__file__)
+			if len(config.read(keys_path.replace('vc_notify.py', 'keys.txt'))) == 0:
 				print ("Couldn't find the keys file, make sure it's in"
 				+ "the same directory as the script")
-		return key_arr
+		return config
 
 	def parse_bitbucket(cls, raw, display=True):
 		count = 0
@@ -114,10 +109,11 @@ class Notifier():
 		return True
 
 	def parse_all(cls):
-		feeds = cls.pull_feeds()
-		for key in feeds:
-					if key.__contains__('bitbucket'): cls.parse_bitbucket(parse(key))
-					if key.__contains__('github'): cls.parse_github(parse(key))
-					if key.__contains__('newstex'): cls.parse_chili(parse(key))
+		config = cls.read_config()
+		for pair in config.items('providers'):
+			if pair[0] == 'bitbucket': cls.parse_bitbucket(parse(pair[1]), display=False)
+			elif pair[0] == 'github': cls.parse_github(parse(pair[1]), display=False)
+			elif pair[0] == 'newstex': cls.parse_chili(parse(pair[1]), display=False)
+		return True
 
 n = Notifier()

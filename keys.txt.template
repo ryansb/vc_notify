@@ -1,2 +1,5 @@
-https://bitbucket.org/YOUR FEED ADDRESS
-https://github.com/YOUR FEED ADDRESS
+[providers]
+bitbucket = (RSS URL)
+github = (RSS URL)
+newstex = (RSS URL)
+
