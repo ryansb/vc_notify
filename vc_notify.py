@@ -24,7 +24,7 @@ class Notifier():
 		cls.initial_pull()
 		while(1):
 			cls.parse_all()
-			sleep(30)
+			sleep(15)
 
 	def initial_pull(cls):
 		n = Notification("Version Control Notifier started", "Version Control Notifier will now notify you of any changes via libnotify")
@@ -48,6 +48,7 @@ class Notifier():
 			if len(config.read(keys_path.replace('vc_notify.py', 'keys.txt'))) == 0:
 				print ("Couldn't find the keys file, make sure it's in"
 				+ "the same directory as the script")
+				exit(1)
 		return config
 
 	def parse_bitbucket(cls, raw, display=True):
@@ -66,6 +67,7 @@ class Notifier():
 						if count > 3:
 							return True
 			except Exception, e:
+				print "ERROR"
 				print e
 		return True
 
@@ -88,6 +90,7 @@ class Notifier():
 						if count > 3:
 							return True
 			except Exception, e:
+				print "ERROR"
 				print e
 		return True
 
@@ -95,9 +98,9 @@ class Notifier():
 		config = cls.read_config()
 		for pair in config.items('providers'):
 			if pair[0] == 'bitbucket':
-				cls.parse_bitbucket(parse(pair[1]), display=False)
+				cls.parse_bitbucket(parse(pair[1]), display=True)
 			elif pair[0] == 'github':
-				cls.parse_github(parse(pair[1]), display=False)
+				cls.parse_github(parse(pair[1]), display=True)
 		return True
 
 n = Notifier()
