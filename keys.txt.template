@@ -1,5 +1,3 @@
 [providers]
 bitbucket = (RSS URL)
 github = (RSS URL)
-newstex = (RSS URL)
-
