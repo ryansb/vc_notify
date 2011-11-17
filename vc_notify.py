@@ -10,7 +10,7 @@ from pynotify import init
 from feedparser import parse
 from BeautifulSoup import BeautifulSoup
 from time import sleep
-from re import split
+#from re import split # unused -- agargiulo 11/15/11
 from sys import argv
 import os
 
@@ -33,7 +33,6 @@ class Notifier():
 		for pair in config.items('providers'):
 			if pair[0] == 'bitbucket': cls.parse_bitbucket(parse(pair[1]), display=False)
 			elif pair[0] == 'github': cls.parse_github(parse(pair[1]), display=False)
-			elif pair[0] == 'newstex': cls.parse_chili(parse(pair[1]), display=False)
 		return True
 
 	def read_config(cls):
@@ -67,7 +66,7 @@ class Notifier():
 						if count > 3:
 							return True
 			except Exception, e:
-				pass
+				print e
 		return True
 
 	def parse_github(cls, raw, display=True):
@@ -89,31 +88,16 @@ class Notifier():
 						if count > 3:
 							return True
 			except Exception, e:
-				pass
-		return True
-
-	def parse_chili(cls, raw, display=True):
-		count = 0
-		for inst in raw['entries']:
-			try:
-				n = Notification(inst['title_detail']['value'], inst['author_detail']['name'])
-				if(not cls.displayed_messages.__contains__(inst['title'])):
-					cls.displayed_messages.append(inst['title'])
-					if n and display:
-						n.show()
-						count += 1
-						if count > 3:
-							return True
-			except Exception, e:
-				pass
+				print e
 		return True
 
 	def parse_all(cls):
 		config = cls.read_config()
 		for pair in config.items('providers'):
-			if pair[0] == 'bitbucket': cls.parse_bitbucket(parse(pair[1]), display=False)
-			elif pair[0] == 'github': cls.parse_github(parse(pair[1]), display=False)
-			elif pair[0] == 'newstex': cls.parse_chili(parse(pair[1]), display=False)
+			if pair[0] == 'bitbucket':
+				cls.parse_bitbucket(parse(pair[1]), display=False)
+			elif pair[0] == 'github':
+				cls.parse_github(parse(pair[1]), display=False)
 		return True
 
 n = Notifier()
