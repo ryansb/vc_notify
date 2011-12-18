@@ -5,17 +5,30 @@
 # only supports Github and BitBucket) in a file named keys.txt separated by
 # whitespace (tabs, spaces, or newlines) and run vc_notify.py
 # Version 1.0.0
-from pynotify import Notification
-from pynotify import init
 from feedparser import parse
 from BeautifulSoup import BeautifulSoup
 from time import sleep
 #from re import split # unused -- agargiulo 11/15/11
 from sys import argv
 import os
-
-if not init("VC Notify"):
-	exit()
+import platform
+if platform.system() == 'Darwin':
+	try:
+		import gntp.notifier
+		class Notification():
+			def __init__(cls,title,body):
+				cls.title = title
+				cls.body = body
+			def show(cls):
+				return gntp.notifier.mini(cls.body,applicationName='vc_notify',title=cls.title)
+	except:
+		print "gntp is required to run this program on OS X"
+		exit()
+else:
+	from pynotify import Notification
+	from pynotify import init
+	if not init("VC Notify"):
+		exit()
 
 class Notifier():
 	def __init__(cls):
